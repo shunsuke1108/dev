@@ -1,0 +1,149 @@
+drop table if exists cart;
+drop table if exists order_details;
+drop table if exists orders;
+drop table if exists users ;
+drop table if exists items;
+drop table if exists categories;
+drop sequence users_user_id_seq;
+drop sequence items_item_id_seq;
+drop sequence orders_order_id_seq;
+
+-- ユーザー
+CREATE TABLE users(
+ user_id INTEGER NOT NULL,
+ password VARCHAR(255) NOT NULL,
+ name VARCHAR(255) NOT NULL,
+ address VARCHAR(255)NOT NULL,
+ email VARCHAR(255)UNIQUE NOT NULL,
+ withdraw_flag BOOLEAN NOT NULL DEFAULT FALSE,
+ withdraw_day DATE,
+ PRIMARY KEY(user_id)
+);
+
+-- カテゴリー
+CREATE TABLE categories(
+ category_id INTEGER NOT NULL,
+ category_name VARCHAR(255) NOT NULL,
+ PRIMARY KEY(category_id)
+);
+
+--　商品
+CREATE TABLE items(
+ item_id INTEGER NOT NULL,
+ category_id INTEGER NOT NULL,
+ item_name VARCHAR(255) NOT NULL,
+ color VARCHAR(255) NOT NULL,
+ manufacturer VARCHAR(255) NOT NULL,
+ price NUMERIC(10) NOT NULL,
+ stock NUMERIC(5) NOT NULL,
+ recommend BOOLEAN NOT NULL DEFAULT FALSE,
+ PRIMARY KEY(item_id),
+ FOREIGN KEY(category_id) references categories(category_id)
+);
+
+-- カート
+CREATE TABLE cart(
+ user_id INTEGER NOT NULL,
+ item_id INTEGER NOT NULL,
+ amount NUMERIC(5) NOT NULL,
+ PRIMARY KEY(user_id,item_id),
+ FOREIGN KEY(user_id) references users(user_id),
+ FOREIGN KEY(item_id) references items(item_id)
+);
+
+-- 購入履歴ヘッダ
+CREATE TABLE orders(
+ order_id INTEGER NOT NULL,
+ user_id INTEGER NOT NULL,
+ delivery_address VARCHAR(255) NOT NULL,
+ order_date DATE NOT NULL,
+ cancel_flag BOOLEAN NOT NULL DEFAULT FALSE,
+ cancel_date DATE,
+ PRIMARY KEY(order_id),
+ FOREIGN KEY(user_id) references users(user_id)
+);
+
+-- 購入履歴詳細
+CREATE TABLE order_details(
+ order_id INTEGER NOT NULL,
+ item_id INTEGER NOT NULL,
+ quantity numeric(5),
+ PRIMARY KEY (order_id,item_id),
+ FOREIGN KEY (order_id) references orders(order_id),
+ FOREIGN KEY (item_id) references items(item_id)
+);
+
+-- シーケンス
+CREATE SEQUENCE users_user_id_seq
+ INCREMENT BY 1
+ MINVALUE 1
+ MAXVALUE 9999999
+ START WITH 1
+ NO CYCLE;
+
+CREATE SEQUENCE items_item_id_seq
+ INCREMENT BY 1
+ MINVALUE 1
+ MAXVALUE 99999
+ START WITH 1
+ NO CYCLE;
+
+CREATE SEQUENCE orders_order_id_seq
+ INCREMENT BY 1
+ MINVALUE 1
+ MAXVALUE 99999
+ START WITH 1
+ NO CYCLE;
+
+-- users
+INSERT INTO users (user_id, password, name, address, email, withdraw_flag)
+ VALUES 
+(nextval('users_user_id_seq'), '@test0000', 'テスト太郎', '東京都千代田区千代田1-1',
+ 'a@icloud.com', FALSE),
+(nextval('users_user_id_seq'), '@test0001', 'テスト太郎1', '東京都千代田区千代田1-1',
+ 'b@icloud.com', FALSE),
+(nextval('users_user_id_seq'), '@test0002', 'テスト太郎2', '東京都千代田区千代田1-1',
+ 'c@icloud.com', TRUE);
+
+-- categories
+INSERT INTO categories (category_id, category_name)
+ VALUES 
+(1, '帽子'),
+(2, '鞄');
+
+-- items
+INSERT INTO items (item_id, category_id, item_name, color, manufacturer, price, stock, recommend)
+ VALUES 
+(nextval('items_item_id_seq'), 1,'大人用', '黒', '帽子専門店', 1000, 10000, TRUE),
+(nextval('items_item_id_seq'), 1,'麦わら', '茶', '帽子専門店', 800, 1000, FALSE),
+(nextval('items_item_id_seq'), 1,'子供用', '白', '帽子専門店', 600, 100, FALSE),
+(nextval('items_item_id_seq'), 2,'普段用', '黒', '鞄専門店', 3000, 10, FALSE),
+(nextval('items_item_id_seq'), 2,'登山用', '茶', '鞄専門店', 2000, 10, FALSE),
+(nextval('items_item_id_seq'), 2,'仕事用', '黒', '鞄専門店', 5000, 10, FALSE);
+
+-- cart
+INSERT INTO cart (user_id, item_id, amount)
+ VALUES 
+(1, 1, 10),
+(1, 2, 10);
+
+-- orders
+INSERT INTO orders (order_id, user_id, delivery_address, order_date)
+ VALUES 
+(nextval('orders_order_id_seq'), 1, '東京都千代田区千代田1-1', '2025-09-05'),
+(nextval('orders_order_id_seq'), 2, '東京都千代田区千代田1-1', '2025-09-06');
+
+-- order_details
+INSERT INTO order_details (order_id, item_id, quantity)
+ VALUES 
+(1, 1, 10),
+(1, 2, 10);
+
+
+
+
+
+
+
+
+
