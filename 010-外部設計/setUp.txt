@@ -12,7 +12,7 @@ drop sequence orders_order_id_seq;
 CREATE TABLE users(
  user_id INTEGER NOT NULL,
  password VARCHAR(255) NOT NULL,
- name VARCHAR(255) NOT NULL,
+ user_name VARCHAR(255) NOT NULL,
  address VARCHAR(255)NOT NULL,
  email VARCHAR(255)UNIQUE NOT NULL,
  withdraw_flag BOOLEAN NOT NULL DEFAULT FALSE,
@@ -33,7 +33,7 @@ CREATE TABLE items(
  category_id INTEGER NOT NULL,
  item_name VARCHAR(255) NOT NULL,
  color VARCHAR(255) NOT NULL,
- manufacturer VARCHAR(255) NOT NULL,
+ manufacturer_name VARCHAR(255) NOT NULL,
  price NUMERIC(10) NOT NULL,
  stock NUMERIC(5) NOT NULL,
  recommend BOOLEAN NOT NULL DEFAULT FALSE,
@@ -96,14 +96,14 @@ CREATE SEQUENCE orders_order_id_seq
  NO CYCLE;
 
 -- users
-INSERT INTO users (user_id, password, name, address, email, withdraw_flag)
+INSERT INTO users (user_id, password, user_name, address, email, withdraw_flag, withdraw_day)
  VALUES 
-(nextval('users_user_id_seq'), '@test0000', 'テスト太郎', '東京都千代田区千代田1-1',
+(nextval('users_user_id_seq'), '@Test0000', 'テスト太郎', '東京都千代田区千代田1-1',
  'a@icloud.com', FALSE),
-(nextval('users_user_id_seq'), '@test0001', 'テスト太郎1', '東京都千代田区千代田1-1',
+(nextval('users_user_id_seq'), '@Test0001', 'テスト太郎1', '東京都千代田区千代田1-1',
  'b@icloud.com', FALSE),
-(nextval('users_user_id_seq'), '@test0002', 'テスト太郎2', '東京都千代田区千代田1-1',
- 'c@icloud.com', TRUE);
+(nextval('users_user_id_seq'), '@Test0002', 'テスト太郎2', '東京都千代田区千代田1-1',
+ 'c@icloud.com', TRUE,2025-09-05);
 
 -- categories
 INSERT INTO categories (category_id, category_name)
@@ -112,7 +112,7 @@ INSERT INTO categories (category_id, category_name)
 (2, '鞄');
 
 -- items
-INSERT INTO items (item_id, category_id, item_name, color, manufacturer, price, stock, recommend)
+INSERT INTO items (item_id, category_id, item_name, color, manufacturer_name, price, stock, recommend)
  VALUES 
 (nextval('items_item_id_seq'), 1,'大人用', '黒', '帽子専門店', 1000, 10000, TRUE),
 (nextval('items_item_id_seq'), 1,'麦わら', '茶', '帽子専門店', 800, 1000, FALSE),
@@ -138,6 +138,7 @@ INSERT INTO order_details (order_id, item_id, quantity)
  VALUES 
 (1, 1, 10),
 (1, 2, 10);
+(2, 1, 10);
 
 
 
